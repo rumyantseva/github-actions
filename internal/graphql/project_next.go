@@ -16,6 +16,7 @@ package graphql
 
 import (
 	"context"
+
 	"github.com/shurcooL/githubv4"
 )
 
@@ -82,10 +83,12 @@ type Querier interface {
 func GetPRItems(client Querier, nodeID string) ([]PRItem, error) {
 	var q struct {
 		Node struct {
-			ID           githubv4.String
-			Title        githubv4.String
-			State        githubv4.String
-			ProjectItems Items `graphql:"projectItems(first: $itemsMax)"`
+			PullRequest struct {
+				ID           githubv4.String
+				Title        githubv4.String
+				State        githubv4.String
+				ProjectItems Items `graphql:"projectItems(first: $itemsMax)"`
+			} `graphql:"... on PullRequest"`
 		} `graphql:"node(id: $nodeID)"`
 	}
 
@@ -99,13 +102,13 @@ func GetPRItems(client Querier, nodeID string) ([]PRItem, error) {
 		return nil, err
 	}
 
-	if q.Node.ProjectItems.TotalCount == 0 {
+	if q.Node.PullRequest.ProjectItems.TotalCount == 0 {
 		return nil, nil
 	}
 
 	var result []PRItem
 
-	for _, v := range q.Node.ProjectItems.Nodes[0].FieldValues.Nodes {
+	for _, v := range q.Node.PullRequest.ProjectItems.Nodes[0].FieldValues.Nodes {
 		typename, ok := v["__typename"]
 		if !ok {
 			continue

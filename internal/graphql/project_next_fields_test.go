@@ -39,46 +39,39 @@ func TestGetIterationTitleByID(t *testing.T) {
 		settings      string
 		expectedTitle string
 		expectedErr   bool
-	}{
-		{
-			name:          "active_many_first",
-			id:            "5f065395",
-			settings:      activeMany,
-			expectedTitle: "Sprint 1",
-		},
-		{
-			name:          "active_many_second",
-			id:            "a0f5e3ae",
-			settings:      activeMany,
-			expectedTitle: "Sprint 2",
-		},
-		{
-			name:          "active_one_first",
-			id:            "5f065395",
-			settings:      activeOne,
-			expectedTitle: "Sprint 1",
-		},
-		{
-			name:          "active_one_second",
-			id:            "a0f5e3ae",
-			settings:      activeOne,
-			expectedTitle: "Sprint 2",
-		},
-		{
-			name:          "invalid_id",
-			id:            "invalid",
-			settings:      activeMany,
-			expectedTitle: "",
-			expectedErr:   true,
-		},
-		{
-			name:          "invalid_json",
-			id:            "5f065395",
-			settings:      "{hello}",
-			expectedTitle: "",
-			expectedErr:   true,
-		},
-	}
+	}{{
+		name:          "active_many_first",
+		id:            "5f065395",
+		settings:      activeMany,
+		expectedTitle: "Sprint 1",
+	}, {
+		name:          "active_many_second",
+		id:            "a0f5e3ae",
+		settings:      activeMany,
+		expectedTitle: "Sprint 2",
+	}, {
+		name:          "active_one_first",
+		id:            "5f065395",
+		settings:      activeOne,
+		expectedTitle: "Sprint 1",
+	}, {
+		name:          "active_one_second",
+		id:            "a0f5e3ae",
+		settings:      activeOne,
+		expectedTitle: "Sprint 2",
+	}, {
+		name:          "invalid_id",
+		id:            "invalid",
+		settings:      activeMany,
+		expectedTitle: "",
+		expectedErr:   true,
+	}, {
+		name:          "invalid_json",
+		id:            "5f065395",
+		settings:      "{hello}",
+		expectedTitle: "",
+		expectedErr:   true,
+	}}
 
 	for _, tc := range tc {
 		t.Run(tc.name, func(t *testing.T) {
@@ -105,32 +98,27 @@ func TestGetSingleSelectTitleByID(t *testing.T) {
 		settings      string
 		expectedTitle string
 		expectedErr   bool
-	}{
-		{
-			name:          "valid_id_first",
-			id:            "f75ad846",
-			settings:      settings,
-			expectedTitle: "Todo",
-		},
-		{
-			name:          "valid_id_second",
-			id:            "47fc9ee4",
-			settings:      settings,
-			expectedTitle: "In Progress",
-		},
-		{
-			name:        "invalid_id",
-			id:          "invalid",
-			settings:    settings,
-			expectedErr: true,
-		},
-		{
-			name:        "invalid_json",
-			id:          "f75ad846",
-			settings:    `{hello}`,
-			expectedErr: true,
-		},
-	}
+	}{{
+		name:          "valid_id_first",
+		id:            "f75ad846",
+		settings:      settings,
+		expectedTitle: "Todo",
+	}, {
+		name:          "valid_id_second",
+		id:            "47fc9ee4",
+		settings:      settings,
+		expectedTitle: "In Progress",
+	}, {
+		name:        "invalid_id",
+		id:          "invalid",
+		settings:    settings,
+		expectedErr: true,
+	}, {
+		name:        "invalid_json",
+		id:          "f75ad846",
+		settings:    `{hello}`,
+		expectedErr: true,
+	}}
 
 	for _, tc := range tc {
 		t.Run(tc.name, func(t *testing.T) {
