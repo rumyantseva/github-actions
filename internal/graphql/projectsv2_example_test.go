@@ -7,7 +7,7 @@ import (
 )
 
 func Example() {
-	token := "test token"
+	token := "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"
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: token},
 	)
