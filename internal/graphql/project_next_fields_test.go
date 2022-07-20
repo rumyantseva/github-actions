@@ -14,13 +14,7 @@
 
 package graphql
 
-import (
-	"testing"
-
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-)
-
+/*
 func TestGetIterationTitleByID(t *testing.T) {
 	activeMany := `{"configuration":{"duration":14,"start_day":1, "iterations":
 [{"id":"5f065395","title":"Sprint 1","duration":14,"start_date":"2022-06-20","title_html":"Sprint 1"},
@@ -133,3 +127,4 @@ func TestGetSingleSelectTitleByID(t *testing.T) {
 		})
 	}
 }
+*/

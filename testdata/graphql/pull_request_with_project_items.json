@@ -8,28 +8,27 @@
         "totalCount": 1,
         "nodes": [
           {
-            "__typename": "ProjectV2Item",
             "fieldValues": {
-              "__typename": "ProjectV2ItemFieldValueConnection",
-              "totalCount": 4,
+              "totalCount": 6,
               "nodes": [
                 {
-                  "__typename": "ProjectV2ItemFieldRepositoryValue",
-                  "repository": {
-                    "name": "github-actions"
-                  }
+                  "__typename": "ProjectV2ItemFieldRepositoryValue"
                 },
                 {
-                  "__typename": "ProjectV2ItemFieldTextValue",
-                  "text": "I'm a test PR linked to a board hello"
+                  "__typename": "ProjectV2ItemFieldMilestoneValue"
                 },
                 {
-                  "__typename": "ProjectV2ItemFieldSingleSelectValue",
-                  "name": "In Progress"
+                  "__typename": "ProjectV2ItemFieldTextValue"
+                },
+                {
+                  "__typename": "ProjectV2ItemFieldSingleSelectValue"
                 },
                 {
                   "__typename": "ProjectV2ItemFieldIterationValue",
-                  "title": "Sprint 1"
+                  "id": "PVTFIV_lQHOABm0wc4ADXbvzgBdUyzOAQFrAw"
+                },
+                {
+                  "__typename": "ProjectV2ItemFieldMilestoneValue"
                 }
               ]
             }

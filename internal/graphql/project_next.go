@@ -16,6 +16,7 @@ package graphql
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/shurcooL/githubv4"
 )
@@ -51,20 +52,34 @@ type GraphQLFieldValue struct {
 }
 
 // Items represents a list of GitHub project items.
+// Data -> Node -> ProjectItems
 type Items struct {
 	TotalCount githubv4.Int
-	Nodes      []ProjectV2Item `graphql:"fieldValues(first: $fieldValuesMax)"`
+	Nodes      []ProjectV2FieldValues `graphql:"fieldValues(first: $fieldValuesMax)"`
 }
 
-// ProjectV2Item represents an item within project.
-type ProjectV2Item struct {
-	FieldValues ProjectV2ItemFieldValueConnection
+// ProjectV2FieldValues represents an item within project.
+// Data -> Node -> ProjectItems -> Nodes
+type ProjectV2FieldValues struct {
+	FieldValues any
+}
+
+// Data -> Node -> ProjectItems -> Nodes -> []
+type ProjectItemsNodes struct {
+	TotalCount  githubv4.Int
+	FieldValues any
 }
 
 // ProjectV2ItemFieldValueConnection represents the connection type for ProjectV2ItemFieldValue.
 type ProjectV2ItemFieldValueConnection struct {
-	TotalCount githubv4.Int
-	Nodes      []map[string]any
+	TypeName githubv4.String
+	Query    string `graphql:"... on ProjectV2ItemFieldIterationValue"`
+	//GenericField GenericField
+	ID githubv4.ID
+}
+
+type GenericField struct {
+	ID githubv4.ID
 }
 
 // PRItem represents Pull Request item values.
@@ -82,11 +97,14 @@ type Querier interface {
 // GetPRItems returns the list of PNIs - Project Next Items (cards) associated with the given PR.
 func GetPRItems(client Querier, nodeID string) ([]PRItem, error) {
 	var q struct {
-		Node struct {
-			PullRequest struct {
-				ID           githubv4.String
-				Title        githubv4.String
-				State        githubv4.String
+		Data struct {
+			// data -> node
+			Node struct {
+				ID    githubv4.String
+				Title githubv4.String
+				State githubv4.String
+
+				// data -> node -> projectItems
 				ProjectItems Items `graphql:"projectItems(first: $itemsMax)"`
 			} `graphql:"... on PullRequest"`
 		} `graphql:"node(id: $nodeID)"`
@@ -102,55 +120,56 @@ func GetPRItems(client Querier, nodeID string) ([]PRItem, error) {
 		return nil, err
 	}
 
-	if q.Node.PullRequest.ProjectItems.TotalCount == 0 {
-		return nil, nil
-	}
+	fmt.Println(q.Data.Node.ProjectItems.Nodes[0].FieldValues)
+
+	//if q.Node.PullRequest.ProjectItems.TotalCount == 0 {
+	//	return nil, nil
+	//}
 
 	var result []PRItem
 
-	for _, v := range q.Node.PullRequest.ProjectItems.Nodes[0].FieldValues.Nodes {
-		typename, ok := v["__typename"]
+	//	for _, v := range q.Node.PullRequest.ProjectItems.Nodes {
+	////		for _, vv := range v.Nodes {
+	//			typename := vv.TypeName
+	//			switch typename {
+	/*case "ProjectV2ItemFieldIterationValue":
+		title, ok := v["title"]
 		if !ok {
 			continue
 		}
-		switch typename {
-		case "ProjectV2ItemFieldIterationValue":
-			title, ok := v["title"]
-			if !ok {
-				continue
-			}
 
-			result = append(result, PRItem{
-				FieldName: getFieldName(v),
-				Value:     title.(string),
-			})
-		case "ProjectV2ItemFieldMilestoneValue":
-			milestone, ok := v["milestone"]
-			if !ok {
-				continue
-			}
-			title, ok := milestone.(map[string]any)["title"]
-			if !ok {
-				continue
-			}
-
-			result = append(result, PRItem{
-				FieldName: getFieldName(v),
-				Value:     title.(string),
-			})
-		case "ProjectV2ItemFieldSingleSelectValue":
-			name, ok := v["name"]
-			if !ok {
-				continue
-			}
-
-			result = append(result, PRItem{
-				FieldName: getFieldName(v),
-				Value:     name.(string),
-			})
-
+		result = append(result, PRItem{
+			FieldName: getFieldName(v),
+			Value:     title.(string),
+		})
+	case "ProjectV2ItemFieldMilestoneValue":
+		milestone, ok := v["milestone"]
+		if !ok {
+			continue
 		}
-	}
+		title, ok := milestone.(map[string]any)["title"]
+		if !ok {
+			continue
+		}
+
+		result = append(result, PRItem{
+			FieldName: getFieldName(v),
+			Value:     title.(string),
+		})
+	case "ProjectV2ItemFieldSingleSelectValue":
+		name, ok := v["name"]
+		if !ok {
+			continue
+		}
+
+		result = append(result, PRItem{
+			FieldName: getFieldName(v),
+			Value:     name.(string),
+		})
+	*/
+	//			}
+	//		}
+	//	}
 
 	return result, nil
 }
